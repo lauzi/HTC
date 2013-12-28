@@ -3,7 +3,7 @@
 import codecs
 import re
 
-for file_i in range(1,2):
+for file_i in range(1,20):
 
     fin = codecs.open('../data/9knife/'+ str(file_i) + '.txt', 'r', encoding='utf8')
     fout = codecs.open('../format/9knife/' + str(file_i) + '.txt', 'w', encoding='utf8')
@@ -15,7 +15,7 @@ for file_i in range(1,2):
     rest_str = ""
     for line in fin:
         count += 1
-        inp = line.strip(u'“”﹝﹞「」')
+        inp = line.strip(u'“”﹝﹞「」＂')
         now_lst = re.findall(u'[^。？！]*[。？！]?', inp)
         #   print len(now_lst)
         for now_str in now_lst:
