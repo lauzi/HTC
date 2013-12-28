@@ -5,11 +5,11 @@ import re
 
 for file_i in range(1,2):
 
-#	fin = open('../data/9knife/'+ str(file_i) + '.txt', 'r')
-#	fout = open('../format/9knife/' + str(file_i) + '.txt', 'w')
+	fin = open('../data/9knife/'+ str(file_i) + '.txt', 'r')
+	fout = open('../format/9knife/' + str(file_i) + '.txt', 'w')
 
-    fin = codecs.open('in.txt', 'r', encoding='utf8')
-    fout = codecs.open('out.txt', 'w', encoding='utf8')
+#    fin = codecs.open('in.txt', 'r', encoding='utf8')
+#    fout = codecs.open('out.txt', 'w', encoding='utf8')
 
     count = 0
     rest_str = ""
