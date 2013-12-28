@@ -3,7 +3,7 @@
 import codecs
 import re
 
-for file_i in range(1,20):
+for file_i in range(1,21):
 
     fin = codecs.open('../data/9knife/'+ str(file_i) + '.txt', 'r', encoding='utf8')
     fout = codecs.open('../format/9knife/' + str(file_i) + '.txt', 'w', encoding='utf8')

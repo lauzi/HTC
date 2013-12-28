@@ -11,18 +11,13 @@ def freq_dict(ngrams_list):
 		d[x] += 1
 	return d
 
-for file_i in range(1,2):
-
-	f = open('../data/9knife/'+ str(file_i) + '.txt', 'r')
+for file_i in range(1,21):
+	print "."
+	f = open('../format/9knife/'+ str(file_i) + '.txt', 'r')
 	fw = open('../feature/9knife/' + str(file_i) + '.txt', 'w')
 
-	count = 0
 	for line in f:
-		count += 1
-		if count == 10: break
 		tokens = map(lambda x:x.flag, ps.cut(unicode(line.strip(), "utf8")))
-		tokens2 = map(lambda x:x.word, ps.cut(unicode(line.strip(), "utf8")))
 		# cut the line into tokens and use its flags
-		#if tokens:
-		print >> fw, tokens2
-		print >> fw, tokens
+		if tokens:
+			print >> fw, tokens
