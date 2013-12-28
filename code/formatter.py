@@ -15,7 +15,8 @@ for file_i in range(1,20):
     rest_str = ""
     for line in fin:
         count += 1
-        inp = line.strip(u'“”﹝﹞「」＂')
+        inp = line.strip(u'“”﹝﹞「」”＂')
+        inp = inp.strip()
         now_lst = re.findall(u'[^。？！]*[。？！]?', inp)
         #   print len(now_lst)
         for now_str in now_lst:
