@@ -11,10 +11,10 @@ def freq_dict(ngrams_list):
 		d[x] += 1
 	return d
 
-for file_i in range(1,21):
+for file_i in range(1,6):
 	print "."
-	f = open('../format/9knife/'+ str(file_i) + '.txt', 'r')
-	fw = open('../feature/9knife/' + str(file_i) + '.txt', 'w')
+	f = open('../format/cityup/'+ str(file_i) + '.txt', 'r')
+	fw = open('../feature/cityup/' + str(file_i) + '.txt', 'w')
 
 	for line in f:
 		tokens = map(lambda x:x.flag, ps.cut(unicode(line.strip(), "utf8")))

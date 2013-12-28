@@ -3,10 +3,10 @@
 import codecs
 import re
 
-for file_i in range(1,21):
+for file_i in range(1,6):
 
-    fin = codecs.open('../data/9knife/'+ str(file_i) + '.txt', 'r', encoding='utf8')
-    fout = codecs.open('../format/9knife/' + str(file_i) + '.txt', 'w', encoding='utf8')
+    fin = codecs.open('../data/cityup/'+ str(file_i) + '.txt', 'r', encoding='utf8')
+    fout = codecs.open('../format/cityup/' + str(file_i) + '.txt', 'w', encoding='utf8')
 
 #    fin = codecs.open('in.txt', 'r', encoding='utf8')
 #    fout = codecs.open('out.txt', 'w', encoding='utf8')
