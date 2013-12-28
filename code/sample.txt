@@ -1,0 +1,10 @@
+print ", ".join(list(jieba.cut(unicode("今天天氣真好", "big5"))))
+
+import jieba.posseg as pseg
+words = pseg.cut(unicode("我想吃，晚餐。", "big5"))
+for w in words:
+	print w.word, w.flag
+
+tokens = jieba.tokenize(u'我肚子好餓')
+for tk in tokens:
+	print "word %s \t\t start: %d \t\t end:%d" % (tk[0], tk[1], tk[2])
