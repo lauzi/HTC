@@ -1,4 +1,5 @@
 import jieba as jb
+jb.load_userdict('../data/dict.txt')
 import jieba.posseg as ps
 import collections
 
@@ -11,13 +12,19 @@ def freq_dict(ngrams_list):
 		d[x] += 1
 	return d
 
-for file_i in range(1,21):
-	print "."
-	f = open('../format/9knife/'+ str(file_i) + '.txt', 'r')
-	fw = open('../feature/9knife/' + str(file_i) + '.txt', 'w')
+for file_i in range(1,2):
+	print "fomatting in file ", file_i
 
+	f = open('../format/cityup/'+ str(file_i) + '.txt', 'r')
+	fw = open('../feature/cityup/' + str(file_i) + '.txt', 'w')
+	count = 0
 	for line in f:
+		count += 1
+		if count % 10 == 0:
+			break
+			print "working ... file", file_i, " .. line ", count
 		tokens = map(lambda x:x.flag, ps.cut(unicode(line.strip(), "utf8")))
 		# cut the line into tokens and use its flags
-		if tokens:
-			print >> fw, tokens
+		for token in tokens:
+			fw.write(token + ' ')
+		fw.write('\n')

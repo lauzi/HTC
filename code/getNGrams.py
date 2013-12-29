@@ -14,7 +14,7 @@ for line in f:
 
 	for gram in grams:
 		if gram not in total_grams:
-			total_grams[gram] = 0
+			total_grams[gram] = 1
 		else:
 			total_grams[gram] += 1
 

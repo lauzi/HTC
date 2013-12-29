@@ -5,9 +5,10 @@
 import MySQLdb, codecs, sys
 
 conn = MySQLdb.connect(host = 'localhost',
+                       port = 5566,
                        user = 'root',
                        charset = 'utf8',
-                       passwd = '751130',
+                       passwd = 'root',
                        db = 'cwn') # connect to my_laptop SQL
 cursor = conn.cursor()
 
@@ -31,7 +32,7 @@ class Synset(object):
        lemmaName = iden[:-7]
        self.id = iden
        self.lemma = lemmaName
-       cursor.execute("SELECT lemma_id FROM lemma WHERE cwn_lemma = '"+lemmaName+"'")
+       cursor.execute("SELECT lemma_id FROM cwn_lemma WHERE cwn_lemma = '"+lemmaName+"'")
        lemmaId = cursor.fetchall() # 6 digits
        #print lemmaId  #((u'070301',),) type:unicode
        senseId = lemmaId[0][0] + iden[-4:-2]
@@ -48,7 +49,7 @@ class Synset(object):
        else: # 詞義
            selfId = lemmaId[0][0] + iden[-4:-2]
        #print selfId
-       cursor.execute("SELECT synonym_word, ref_id FROM cwn_synonym WHERE cwn_id ='"+selfId+"' UNION SELECT synonym_word, ref_id FROM cwn_synonymtmp WHERE cwn_tmpid ='"+selfId+"' UNION SELECT var_word, ref_id FROM cwn_var WHERE cwn_id ='"+selfId+"' UNION SELECT var_word, ref_id FROM cwn_vartmp WHERE cwn_tmpid ='"+selfId+"'")    
+       cursor.execute(u"SELECT synonym_word, ref_id FROM 同義詞 WHERE cwn_id ='"+selfId+u"' UNION SELECT synonym_word, ref_id FROM 同義詞 WHERE cwn_tmpid ='"+selfId+"' UNION SELECT var_word, ref_id FROM cwn_var WHERE cwn_id ='"+selfId+"' UNION SELECT var_word, ref_id FROM cwn_vartmp WHERE cwn_tmpid ='"+selfId+"'")
        all_tuple = cursor.fetchall()
        #print all_tuple # (u'\u524d\u65b9', u'0100')
        if len(all_tuple) == 0:
@@ -63,7 +64,7 @@ class Synset(object):
        for a in sense1:
            lemmaName = a[:-6]
            refId = a[-4:-2]
-           ###############  找出sense_id  ###########################################   
+           ###############  找出sense_id  ###########################################
            cursor.execute("SELECT lemma_id FROM lemma WHERE cwn_lemma = '"+lemmaName+"'")
            lemmaId = cursor.fetchall()
            #print lemmaId  #((u'070301',),) type:unicode
@@ -78,7 +79,7 @@ class Synset(object):
        senses = []
        for n in range(len(pos)):
            senses.append(sense1[n][:index[n]+1]+pos[n]+sense1[n][index[n]+1:])
-       self.senses = senses        
+       self.senses = senses
 
 ##################################    ANTONYMS   #######################################
 ########################################################################################
@@ -110,7 +111,7 @@ class Synset(object):
         for a in nyms:
             lemmaName = a[:-6]
             refId = a[-4:-2]
-            ###############  找出sense_id  ###########################################   
+            ###############  找出sense_id  ###########################################
             cursor.execute("SELECT lemma_id FROM lemma WHERE cwn_lemma = '"+lemmaName+"'")
             lemmaId = cursor.fetchall()
             #print lemmaId  #((u'070301',),) type:unicode
@@ -128,7 +129,7 @@ class Synset(object):
         return antonyms
 
 ###################################    HYPERNYMS      ###################################
-#########################################################################################            
+#########################################################################################
     def hypernyms(self):
         ################ GET SENSE-ID #############################
         cursor.execute("SELECT lemma_id FROM lemma WHERE cwn_lemma = '"+self.lemma+"'")
@@ -156,7 +157,7 @@ class Synset(object):
         for a in nyms:
             lemmaName = a[:-6]
             refId = a[-4:-2]
-            ###############  找出sense_id  ###########################################   
+            ###############  找出sense_id  ###########################################
             cursor.execute("SELECT lemma_id FROM lemma WHERE cwn_lemma = '"+lemmaName+"'")
             lemmaId = cursor.fetchall()
             #print lemmaId  #((u'070301',),) type:unicode
@@ -202,7 +203,7 @@ class Synset(object):
         for a in nyms:
             lemmaName = a[:-6]
             refId = a[-4:-2]
-            ###############  找出sense_id  #####################   
+            ###############  找出sense_id  #####################
             cursor.execute("SELECT lemma_id FROM lemma WHERE cwn_lemma = '"+lemmaName+"'")
             lemmaId = cursor.fetchall()
             #print lemmaId  #((u'070301',),) type:unicode
@@ -248,7 +249,7 @@ class Synset(object):
         for a in nyms:
             lemmaName = a[:-6]
             refId = a[-4:-2]
-            ###############  找出sense_id  #####################   
+            ###############  找出sense_id  #####################
             cursor.execute("SELECT lemma_id FROM lemma WHERE cwn_lemma = '"+lemmaName+"'")
             lemmaId = cursor.fetchall()
             #print lemmaId  #((u'070301',),) type:unicode
@@ -294,7 +295,7 @@ class Synset(object):
         for a in nyms:
             lemmaName = a[:-6]
             refId = a[-4:-2]
-            ###############  找出sense_id  #####################   
+            ###############  找出sense_id  #####################
             cursor.execute("SELECT lemma_id FROM lemma WHERE cwn_lemma = '"+lemmaName+"'")
             lemmaId = cursor.fetchall()
             #print lemmaId  #((u'070301',),) type:unicode
@@ -316,14 +317,14 @@ class Synset(object):
 ###################################################################################
 class Sense(object):
     """ Chinese Wordnet senses """
-    
+
     def __init__(self, iden='晨間.n.0100'):
         ####################################      NAME     ##################
         lemmaName = iden[:-7]#用regex把後面數字去掉?How?
         self.name = lemmaName
-        
+
         #################################### PRONUNCIATION, KEY(SENSE_ID) ##################
-        cursor.execute("SELECT cwn_pinyin, cwn_zhuyin, lemma_id FROM lemma WHERE cwn_lemma = '"+lemmaName+"'")
+        cursor.execute("SELECT cwn_pinyin, cwn_zhuyin, lemma_id FROM cwn_lemma WHERE cwn_lemma = '"+lemmaName+"'")
         sound_key = cursor.fetchall()
         self.pinyin = sound_key[0][0]#.encode('utf8') #加不加?
         #print self.pinyin
@@ -378,12 +379,12 @@ class Sense(object):
                 eg = []
         else:
             for a in all_examples:
-                eg.append(a[0])        
+                eg.append(a[0])
         self.examples = eg
-        
+
         ################################## PARONYMS ######################################
         """iden='晨間.n.0100'"""
-        # attributes 及 methods 的差別?  
+        # attributes 及 methods 的差別?
         cursor.execute("SELECT paranym_word, ref_id FROM cwn_paranym WHERE cwn_id ='"+senseId+"' UNION SELECT paranym_word, ref_id FROM cwn_paranymtmp WHERE cwn_tmpid ='"+senseId+"'")
         all_tuple = cursor.fetchall()
         #print all_tuple # (u'\u524d\u65b9', u'0100')
@@ -396,7 +397,7 @@ class Sense(object):
                 member = tup[0].encode('utf8')+'..'+ str(tup[1])
                 paronym.append(member)
             for a in paronym:
-                paronyms.append(a[:-5]+iden[-6]+a[-5:])      
+                paronyms.append(a[:-5]+iden[-6]+a[-5:])
         self.paronyms = paronyms
 
 
@@ -412,7 +413,7 @@ class Facet(object):
         self.name = lemmaName
 
         #################################### PRONUNCIATION, KEY(SENSE_ID) ##################
-        cursor.execute("SELECT cwn_pinyin, cwn_zhuyin, lemma_id FROM lemma WHERE cwn_lemma = '"+lemmaName+"'")
+        cursor.execute("SELECT cwn_pinyin, cwn_zhuyin, lemma_id FROM cwn_lemma WHERE cwn_lemma = '"+lemmaName+"'")
         sound_key = cursor.fetchall()
         self.pinyin = sound_key[0][0]#.encode('utf8') #加不加?
         #print self.pinyin
@@ -489,7 +490,7 @@ class Facet(object):
                 cursor.execute("SELECT lemma_id FROM lemma WHERE cwn_lemma = '"+lemmaName+"'")
                 lemmaId = cursor.fetchall()
                 #print lemmaId  #((u'070301',),) type:unicode
-                facetId = lemmaId[0][0] + refId     
+                facetId = lemmaId[0][0] + refId
             ############## get POS ######################
                 cursor.execute("SELECT pos FROM pos WHERE cwn_id = '"+facetId+"' UNION SELECT pos FROM pos_tmp WHERE cwn_tmpid = '"+facetId+"'")
                 tag = cursor.fetchall()
@@ -581,4 +582,3 @@ def synsets(userInput):
     #for idenn in synset_iden:
      #   synsets.append(Synset(idenn))
     #return synsets
-
