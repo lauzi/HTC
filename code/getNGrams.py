@@ -10,9 +10,9 @@ for dir_i in range(3):
 	print "doing ... ", dir_name[dir_i]
 	
 	for file_i in range(1, dir_num[dir_i] + 1):
-		f = open('../feature/' + dir_name[dir_i] + '/' + str(file_i) + '.txt', 'r')
 		for n in range(1,11):# for each n-grams
 			print dir_name[dir_i], file_i, n, "-grams"
+			f = open('../feature/' + dir_name[dir_i] + '/' + str(file_i) + '.txt', 'r')
 			fw = open('../ngram/' + str(n) + '/' + dir_name[dir_i] + '/' + str(file_i) + '.txt', 'w')
 			total_grams = dict()
 			for line in f:
@@ -30,4 +30,5 @@ for dir_i in range(3):
 			tmp = total_grams.items()
 			tmp.sort(key=lambda x:x[1], reverse=True)
 			for t in tmp:
-				fw.write(str(t[0]) + ' ' + str(t[1]) + '\n')
+				for tt in t[0]: fw.write(str(tt) + ' ')
+				fw.write(str(t[1]) + '\n')
