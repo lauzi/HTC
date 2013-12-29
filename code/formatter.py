@@ -12,8 +12,8 @@ def clean_str(str, invalid=u'，：；、…'):
 
 for file_i in range(1,2):
 
-    fin = codecs.open('../data/love0/'+ str(file_i) + '.txt', 'r', encoding='utf8')
-    fout = codecs.open('../format/love0/' + str(file_i) + '.txt', 'w', encoding='utf8')
+    fin = codecs.open('../data/cityup/'+ str(file_i) + '.txt', 'r', encoding='utf8')
+    fout = codecs.open('../format/cityup/' + str(file_i) + '.txt', 'w', encoding='utf8')
 
 #    fin = codecs.open('in.txt', 'r', encoding='utf8')
 #    fout = codecs.open('out.txt', 'w', encoding='utf8')
