@@ -14,6 +14,7 @@ dir_name = ["cityup", "9knife", "love0"]
 dir_num = [5, 24, 2]
 
 for dir_i in range(3):
+    print "doing ... ", dir_name[dir_i]
     for file_i in range(1, dir_num[dir_i] + 1):
 
         fin = codecs.open('../data/' + dir_name[dir_i] + '/'+ str(file_i) + '.txt', 'r', encoding='utf8')

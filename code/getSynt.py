@@ -15,6 +15,7 @@ def freq_dict(ngrams_list):
 dir_name = ["cityup", "9knife", "love0"]
 dir_num = [5, 24, 2]
 for dir_i in range(3):
+	print "doing ... ", dir_name[dir_i]
 	for file_i in range(1, dir_num[dir_i] + 1):
 		print "fomatting in file ", dir_name, file_i
 		f = open('../format/' + dir_name[dir_i] + '/'+ str(file_i) + '.txt', 'r')
@@ -22,8 +23,7 @@ for dir_i in range(3):
 		count = 0
 		for line in f:
 			count += 1
-			if count % 10 == 0:
-				break
+			if count % 100 == 0: print "working...", count
 				print "working ... file", file_i, " .. line ", count
 			tokens = map(lambda x:x.flag, ps.cut(unicode(line.strip(), "utf8")))
 			# cut the line into tokens and use its flags
