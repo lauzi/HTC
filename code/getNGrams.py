@@ -11,7 +11,7 @@ for dir_i in range(3):
 	
 	for file_i in range(1, dir_num[dir_i] + 1):
 		f = open('../feature/' + dir_name[dir_i] + '/' + str(file_i) + '.txt', 'r')
-		for n in range(3,8):# for each n-grams
+		for n in range(1,11):# for each n-grams
 			print dir_name[dir_i], file_i, n, "-grams"
 			fw = open('../ngram/' + str(n) + '/' + dir_name[dir_i] + '/' + str(file_i) + '.txt', 'w')
 			total_grams = dict()
