@@ -516,8 +516,7 @@ class Facet(object):
 ###################################################################################
 
 def synsets(userInput):
-    u_input = userInput.decode('cp950') # why 'ascii' produces Errors???
-    userinput = u_input.encode('utf8') # 這邊decode, encode是必要的
+    userinput = userInput.decode('utf8')
     #############   找ref_id    ####################################
     cursor.execute("SELECT sence_id, lemma_id FROM lemma1 WHERE lemma = '"+userinput+"'")
     # 前後要加+ 表示是字串, 在python裡就會被解讀為variable
