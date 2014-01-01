@@ -8,14 +8,14 @@ import sys
 import jieba as jb
 import jieba.posseg as ps
 
-gram_path = '../ngram/normalized/9knife_%d.txt'
+gram_path = '../ngram/normalized/love0_%d.txt'
 gram_num = 3
 file_name = 'in.txt'
 fout = sys.stdout
 ftmp = sys.stdout
 
 # simulated annealing
-def sa(inputStr, gram_dict, k_max=10000, tem=lambda x: 1.0-x):
+def sa(inputStr, gram_dict, k_max=1000, tem=lambda x: 1.0-x):
     s = ps.cut(inputStr)
     s_now = map(lambda x:(x.word, x.flag), ps.cut(inputStr))
     e_now = energy(s_now, gram_dict)
@@ -72,7 +72,7 @@ def energy(tokens, gram_dict):
         energy_count = 0.0
         for gram in lst:
             energy_count += gram_dict.get(gram, 0)
-        return energy_count / len(lst) * 100000
+        return energy_count / len(lst) * 100000.0
     else:
         return 0
 
@@ -81,9 +81,41 @@ def get_dict():
     fin = open(gram_path % gram_num, 'r')
     return eval(fin.readline().strip())
 
+# add punctuation
+def add_punc(_tokens, dict):
+    
+    def count_len(lb, rb):
+        return (rb-lb+1) - gram_num + 1
+
+    tokens = list(_tokens)
+    dp_dict = {}
+    lst_dict = {}
+    # dp
+    for j in range(len(tokens)):
+        for i in range(len(tokens)-j):
+            max_value = energy(tokens[i:i+j+1], dict)
+            max_lst = []
+            for k in range(i,i+j):
+                len1 = count_len(i,k)
+                len2 = count_len(k+1,i+j)
+                if len1 == 0 or len2 == 0: # no need to count energy
+                    continue
+                # now_value = avg. energy
+                now_value = (dp_dict[(i,k)]*len1 + dp_dict[(k+1,i+j)]*len2) / (len1+len2)
+                if max_value < now_value:
+                    max_value = now_value
+                    max_lst = lst_dict[(k+1,i+j)] + [k+1] + lst_dict[(i,k)] 
+            dp_dict[(i,i+j)] = max_value
+            lst_dict[(i,i+j)] = max_lst
+    for i in max_lst:
+        tokens.insert(i, (u'，', 'qq'))
+    print >> ftmp, "energy = %d, add at" % max_value, max_lst, tokens_to_str(tokens)
+    return tokens
+
 # sort of preprocessing ...
 def solve(inputStr, gram_dict):
     after_tokens = sa(inputStr, gram_dict)
+    after_tokens = add_punc(after_tokens, gram_dict)
     return tokens_to_str(after_tokens)
 
 # clean any not-word symbol
