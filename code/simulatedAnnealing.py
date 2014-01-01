@@ -8,14 +8,15 @@ import sys
 import jieba as jb
 import jieba.posseg as ps
 
-gram_path = '../ngram/normalized/love0_%d.txt'
+gram_path = '../ngram/normalized/%s_%d.txt'
 gram_num = 3
+author = 'cityup'
 file_name = 'in.txt'
 fout = sys.stdout
 ftmp = sys.stdout
 
 # simulated annealing
-def sa(inputStr, gram_dict, k_max=1000, tem=lambda x: 1.0-x):
+def sa(inputStr, gram_dict, k_max=10000, tem=lambda x: 1.0-x):
     s = ps.cut(inputStr)
     s_now = map(lambda x:(x.word, x.flag), ps.cut(inputStr))
     e_now = energy(s_now, gram_dict)
@@ -37,7 +38,7 @@ def tokens_to_str(tokens):
     return "".join(map(lambda x:x[0], tokens))
     
 # get neighbor
-def get_neighbor(_tokens, magic=0.9999, gap=3):
+def get_neighbor(_tokens, magic=0.999, gap=4):
     tokens = list(_tokens)
     if random.random() < magic:
         # shuffle
@@ -78,7 +79,7 @@ def energy(tokens, gram_dict):
 
 # get dictionary from eval the target file
 def get_dict():
-    fin = open(gram_path % gram_num, 'r')
+    fin = open(gram_path % (author, gram_num), 'r')
     return eval(fin.readline().strip())
 
 # add punctuation
@@ -130,7 +131,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         pre_arg = ""
         for arg in sys.argv[1:]:
-            if arg == "-out" or arg == "-gnum" or arg == "-in":
+            if arg in ["-out", "-gnum", "-in", "-au"]:
                 pre_arg = arg
             else:
                 if pre_arg == "-out":
@@ -139,8 +140,10 @@ if __name__ == "__main__":
                     gram_num = int(arg)
                 elif pre_arg == "-in":
                     file_name = arg
+                elif pre_arg == "-au":
+                    author = arg
                 else:
-                    print "syntax: -out outfile -in infile -gnum num_of_gram"
+                    print "syntax: -out outfile -in infile -gnum num_of_gram -au author"
                     exit()
                 pre_arg = ""
 
