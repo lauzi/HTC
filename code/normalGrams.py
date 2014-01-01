@@ -26,7 +26,10 @@ for gram in range(min_gram, max_gram+1):
             # normailze & insert into dict
             for (k, v) in origin_dict.items():
                 normalize_dict[k] = normalize_dict.get(k, 0) + (v * 1.0 / appear_count / num)
+        # convert into list
+        normalize_list = normalize_dict.items()
+        normalize_list.sort(key = lambda x : x[-1], reverse = True)
         # write into output file
-        fout = open(path+'/normalized/'+author+'_'+str(gram)+'.txt', 'w')
-        print >> fout, normalize_dict
+        fout = open(path+'/normalized_truncate/'+author+'_'+str(gram)+'.txt', 'w')
+        print >> fout, normalize_list[:100]
         fout.close()
