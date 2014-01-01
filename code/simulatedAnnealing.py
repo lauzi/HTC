@@ -98,7 +98,7 @@ def add_punc(_tokens, dict):
             for k in range(i,i+j):
                 len1 = count_len(i,k)
                 len2 = count_len(k+1,i+j)
-                if len1 == 0 or len2 == 0: # no need to count energy
+                if len1 <= 0 or len2 <= 0: # no need to count energy
                     continue
                 # now_value = avg. energy
                 now_value = (dp_dict[(i,k)]*len1 + dp_dict[(k+1,i+j)]*len2) / (len1+len2)
