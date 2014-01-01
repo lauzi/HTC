@@ -8,19 +8,21 @@ import sys
 import jieba as jb
 import jieba.posseg as ps
 
-gram_path = '../ngram/normalized/cityup_%d.txt'
+gram_path = '../ngram/normalized/9knife_%d.txt'
 gram_num = 3
 file_name = 'in.txt'
+fout = sys.stdout
 ftmp = sys.stdout
 
 # simulated annealing
-def sa(inputStr, gram_dict, k_max=100, tem=lambda x: 1.0-x):
+def sa(inputStr, gram_dict, k_max=1000, tem=lambda x: 1.0-x):
     s = ps.cut(inputStr)
     s_now = map(lambda x:(x.word, x.flag), ps.cut(inputStr))
     e_now = energy(s_now, gram_dict)
     k_now = 0
     while k_now < k_max:
-        print >> ftmp, ("k_now = %d, e_now = %f %s" % (k_now,  e_now, tokens_to_str(s_now)))
+        if k_now % (k_max/10) == 0:
+            print >> ftmp, ("k_now = %d, e_now = %f %s" % (k_now,  e_now, tokens_to_str(s_now)))
         s_nxt = get_neighbor(s_now)
         e_nxt = energy(s_nxt, gram_dict)
         if (e_nxt > e_now) or random.random() < math.exp(-(e_now-e_nxt)*1.0/tem(k_now*1.0/k_max)):
@@ -35,19 +37,28 @@ def tokens_to_str(tokens):
     return "".join(map(lambda x:x[0], tokens))
     
 # get neighbor
-def get_neighbor(_tokens, magic = 0.95, gap=3):
+def get_neighbor(_tokens, magic=0.999, gap=1):
     tokens = list(_tokens)
     if random.random() < magic:
         # shuffle
-        pos1 = random.randint(0, len(tokens)-1)
-        pos2 = random.randint(max(pos1-gap,0), min(pos1+gap,len(tokens)-1))
-        tmp = tokens[pos1]
-        tokens[pos1] = tokens[pos2]
-        tokens[pos2] = tmp
+        if len(tokens) > 1:
+            pos1 = random.randint(0, len(tokens)-1)
+            pos2 = random.randint(max(pos1-gap,0), min(pos1+gap,len(tokens)-1))
+            tmp = tokens[pos1]
+            tokens[pos1] = tokens[pos2]
+            tokens[pos2] = tmp
     else:
         # duplicate
         pos = random.randint(0, len(tokens)-1)
         tokens.insert(pos, tokens[pos])
+    '''
+        # remove
+        if len(tokens) > gram_num:
+            pos = random.randint(0, len(tokens)-1)
+            if tokens[pos][1] != 'n':
+                tokens.pop(pos)
+    '''
+    
     return tokens
 
 # fine ngrams
@@ -57,10 +68,13 @@ def find_ngrams(lst):
 # calc the energy of current tokens
 def energy(tokens, gram_dict):
     lst = find_ngrams(map(lambda x:x[1], tokens))
-    energy_count = 0.0
-    for gram in lst:
-        energy_count += gram_dict.get(gram, 0)
-    return energy_count
+    if lst:
+        energy_count = 0.0
+        for gram in lst:
+            energy_count += gram_dict.get(gram, 0)
+        return energy_count / len(lst) * 100000
+    else:
+        return 0
 
 # get dictionary from eval the target file
 def get_dict():
@@ -81,11 +95,22 @@ def clean_str(str, invalid=u'，：；、…，。！？“”﹝﹞「」”＂
 if __name__ == "__main__":
     # input interface
     ftmp = codecs.open('out.txt', 'w', encoding='utf8')
-    if len(sys.argv) == 2:
-        gram_num = int(sys.argv[1])
-    elif len(sys.argv) == 3:
-        gram_num = int(sys.argv[1])
-        file_name = sys.argv[2]
+    if len(sys.argv) > 1:
+        pre_arg = ""
+        for arg in sys.argv[1:]:
+            if arg == "-out" or arg == "-gnum" or arg == "-in":
+                pre_arg = arg
+            else:
+                if pre_arg == "-out":
+                    fout = codecs.open(arg, 'w', encoding='utf8')
+                elif pre_arg == "-gnum":
+                    gram_num = int(arg)
+                elif pre_arg == "-in":
+                    file_name = arg
+                else:
+                    print "syntax: -out outfile -in infile -gnum num_of_gram"
+                    exit()
+
     # init
     gram_dict = get_dict()
     jb.load_userdict('../data/dict.txt')
@@ -95,7 +120,8 @@ if __name__ == "__main__":
     for line in fin:
         inp = clean_str(line)
         inp = inp.strip()
-        print "Origin Str:\n%s" % (inp)
-        print "After Str:\n%s" % (solve(inp, gram_dict))
+        if len(inp) > gram_num:
+            print >> fout, "Origin Str:\n%s" % (inp)
+            print >> fout, "After Str:\n%s" % (solve(inp, gram_dict))
     fin.close()
     ftmp.close()
