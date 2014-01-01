@@ -15,7 +15,7 @@ fout = sys.stdout
 ftmp = sys.stdout
 
 # simulated annealing
-def sa(inputStr, gram_dict, k_max=1000, tem=lambda x: 1.0-x):
+def sa(inputStr, gram_dict, k_max=10000, tem=lambda x: 1.0-x):
     s = ps.cut(inputStr)
     s_now = map(lambda x:(x.word, x.flag), ps.cut(inputStr))
     e_now = energy(s_now, gram_dict)
@@ -37,7 +37,7 @@ def tokens_to_str(tokens):
     return "".join(map(lambda x:x[0], tokens))
     
 # get neighbor
-def get_neighbor(_tokens, magic=0.999, gap=1):
+def get_neighbor(_tokens, magic=0.9999, gap=3):
     tokens = list(_tokens)
     if random.random() < magic:
         # shuffle
@@ -110,6 +110,7 @@ if __name__ == "__main__":
                 else:
                     print "syntax: -out outfile -in infile -gnum num_of_gram"
                     exit()
+                pre_arg = ""
 
     # init
     gram_dict = get_dict()
