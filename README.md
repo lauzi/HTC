@@ -1,4 +1,5 @@
 HTC
 ===
 
-Fuck Shit
+Hipster Text Creator (HTC) is a 2013 AI Final Project at NTU.
+HTC transform the original text into hipster-like text.
