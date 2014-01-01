@@ -49,7 +49,11 @@ class Synset(object):
        else: # 詞義
            selfId = lemmaId[0][0] + iden[-4:-2]
        #print selfId
-       cursor.execute(u"SELECT synonym_word, ref_id FROM 同義詞 WHERE cwn_id ='"+selfId+u"' UNION SELECT synonym_word, ref_id FROM 同義詞 WHERE cwn_tmpid ='"+selfId+"' UNION SELECT var_word, ref_id FROM cwn_var WHERE cwn_id ='"+selfId+"' UNION SELECT var_word, ref_id FROM cwn_vartmp WHERE cwn_tmpid ='"+selfId+"'")
+       cursor.execute(""+
+u"SELECT synonym_word, ref_id FROM cwn_synonym WHERE cwn_id ='"+selfId+"' "+
+#u"UNION SELECT synonym_word, ref_id FROM cwn_synonym WHERE cwn_tmpid ='"+selfId+"' "+
+#u"UNION SELECT var_word, ref_id FROM cwn_var WHERE cwn_id ='"+selfId+"' "+
+u"UNION SELECT var_word, ref_id FROM cwn_vartmp WHERE cwn_tmpid ='"+selfId+"'")
        all_tuple = cursor.fetchall()
        #print all_tuple # (u'\u524d\u65b9', u'0100')
        if len(all_tuple) == 0:
@@ -65,7 +69,7 @@ class Synset(object):
            lemmaName = a[:-6]
            refId = a[-4:-2]
            ###############  找出sense_id  ###########################################
-           cursor.execute("SELECT lemma_id FROM lemma WHERE cwn_lemma = '"+lemmaName+"'")
+           cursor.execute("SELECT lemma_id FROM cwn_lemma WHERE cwn_lemma = '"+lemmaName+"'")
            lemmaId = cursor.fetchall()
            #print lemmaId  #((u'070301',),) type:unicode
            senseid = lemmaId[0][0] + refId
@@ -518,9 +522,9 @@ class Facet(object):
 def synsets(userInput):
     userinput = userInput.decode('utf8')
     #############   找ref_id    ####################################
-    cursor.execute("SELECT sence_id, lemma_id FROM lemma1 WHERE lemma = '"+userinput+"'")
+    cursor.execute("SELECT sence_id, lemma_id FROM lemma WHERE lemma = '"+userinput+"'")
     # 前後要加+ 表示是字串, 在python裡就會被解讀為variable
-    #cursor.execute("SELECT cwn_lemma FROM lemma WHERE lemma_id = '100155'")
+    #cursor.execute("SELECT cwn_lemma FROM cwn_lemma WHERE lemma_id = '100155'")
     sense_lemma = cursor.fetchall() # fetch all matches: ((,...),...)包兩層的tuple
     #print sense_lemma, len(sense_lemma)
     sense_id = []

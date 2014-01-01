@@ -11,11 +11,15 @@ conn = MySQLdb.connect(host = 'localhost',
                        db = 'cwn') # connect to my_laptop SQL
 cursor = conn.cursor()
 
-if __name__ == '__main__':
+def query_syndb():
     cursor.execute("SELECT * FROM 同義詞")
     c = cursor.fetchall()
     for i in range(300):
         print c[i][0], ", ", c[i][1], ", ", c[i][2], ", ", c[i][3], ", ", c[i][4]
 
-    #print ', '.join(map(str, list(c[0])))
-    cwn.synsets('食物')
+if __name__ == '__main__':
+    query_syndb()
+
+    # this is useless: we need to provide its sense
+    for syn in cwn.Synset().senses:
+        print syn
