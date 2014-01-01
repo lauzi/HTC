@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 
-import formatter
 import math
 import random
 import codecs
@@ -9,40 +8,42 @@ import sys
 import jieba as jb
 import jieba.posseg as ps
 
-gram_path = '../ngram/normalized_truncate/cityup_%d.txt'
+gram_path = '../ngram/normalized/cityup_%d.txt'
 gram_num = 3
 file_name = 'in.txt'
+ftmp = sys.stdout
 
 # simulated annealing
-def sa(s, gram_dict, k_max=100, tem=lambda x: 1.0-x):
-    s_now = s
+def sa(inputStr, gram_dict, k_max=100, tem=lambda x: 1.0-x):
+    s = ps.cut(inputStr)
+    s_now = map(lambda x:(x.word, x.flag), ps.cut(inputStr))
     e_now = energy(s_now, gram_dict)
     k_now = 0
     while k_now < k_max:
-        print "k_now = %d, %s" % (k_now, tokens_to_str(s_now))
+        print >> ftmp, ("k_now = %d, e_now = %f %s" % (k_now,  e_now, tokens_to_str(s_now)))
         s_nxt = get_neighbor(s_now)
         e_nxt = energy(s_nxt, gram_dict)
         if (e_nxt > e_now) or random.random() < math.exp(-(e_now-e_nxt)*1.0/tem(k_now*1.0/k_max)):
-            a_now = a_nxt
+            s_now = s_nxt
             e_now = e_nxt
         
         k_now = k_now +1
-    return 
+    return s_now
 
 # tokens to string
 def tokens_to_str(tokens):
-    return "".join(map(lambda x:x.word, tokens))
+    return "".join(map(lambda x:x[0], tokens))
     
 # get neighbor
-def get_neighbor(_tokens, magic = 0.5):
+def get_neighbor(_tokens, magic = 0.95, gap=3):
     tokens = list(_tokens)
     if random.random() < magic:
         # shuffle
         pos1 = random.randint(0, len(tokens)-1)
-        pos2 = random.randint(0, len(tokens)-1)
-        tmp = lst[pos1]
-        lst[pos1] = lst[pos2]
-        lst[pos2] = tmp
+        pos2 = random.randint(max(pos1-gap,0), min(pos1+gap,len(tokens)-1))
+        tmp = tokens[pos1]
+        tokens[pos1] = tokens[pos2]
+        tokens[pos2] = tmp
     else:
         # duplicate
         pos = random.randint(0, len(tokens)-1)
@@ -55,7 +56,7 @@ def find_ngrams(lst):
 
 # calc the energy of current tokens
 def energy(tokens, gram_dict):
-    lst = find_ngrams(map(lambda x:x.flag, tokens))
+    lst = find_ngrams(map(lambda x:x[1], tokens))
     energy_count = 0.0
     for gram in lst:
         energy_count += gram_dict.get(gram, 0)
@@ -68,13 +69,18 @@ def get_dict():
 
 # sort of preprocessing ...
 def solve(inputStr, gram_dict):
-    tokens = ps.cut(inputStr)
-    print tokens_to_str(tokens)
-    after_tokens = sa(tokens, gram_dict)
+    after_tokens = sa(inputStr, gram_dict)
     return tokens_to_str(after_tokens)
+
+# clean any not-word symbol
+def clean_str(str, invalid=u'，：；、…，。！？“”﹝﹞「」”＂『』《》—　 （）'):
+    for ch in invalid:
+        str = str.replace(ch, "")
+    return str
 
 if __name__ == "__main__":
     # input interface
+    ftmp = codecs.open('out.txt', 'w', encoding='utf8')
     if len(sys.argv) == 2:
         gram_num = int(sys.argv[1])
     elif len(sys.argv) == 3:
@@ -87,8 +93,9 @@ if __name__ == "__main__":
     # process input
     fin = codecs.open(file_name, 'r', encoding='utf8')
     for line in fin:
-        inp = formatter.clean_str(line, u'“”﹝﹞「」”＂『』《》—')
-        inp.strip()
-        inp = formatter.clean_str(inp)
-        print solve(inp, gram_dict)
+        inp = clean_str(line)
+        inp = inp.strip()
+        print "Origin Str:\n%s" % (inp)
+        print "After Str:\n%s" % (solve(inp, gram_dict))
     fin.close()
+    ftmp.close()

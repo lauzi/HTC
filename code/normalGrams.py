@@ -31,5 +31,9 @@ for gram in range(min_gram, max_gram+1):
         normalize_list.sort(key = lambda x : x[-1], reverse = True)
         # write into output file
         fout = open(path+'/normalized_truncate/'+author+'_'+str(gram)+'.txt', 'w')
-        print >> fout, normalize_list[:100]
+        # list return to dict
+        truncate_dict = {}
+        for tup in normalize_list[:100]:
+            truncate_dict[tup[0]] = float(tup[1])
+        print >> fout, truncate_dict
         fout.close()
