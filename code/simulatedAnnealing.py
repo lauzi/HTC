@@ -16,7 +16,7 @@ fout = sys.stdout
 ftmp = sys.stdout
 
 # simulated annealing
-def sa(inputStr, gram_dict, k_max=10000, tem=lambda x: 1.0-x):
+def sa(inputStr, gram_dict, k_max=10000, tem=lambda x: 1.0-x ** 2):
     s = ps.cut(inputStr)
     s_now = map(lambda x:(x.word, x.flag), ps.cut(inputStr))
     e_now = energy(s_now, gram_dict)
@@ -38,7 +38,7 @@ def tokens_to_str(tokens):
     return "".join(map(lambda x:x[0], tokens))
     
 # get neighbor
-def get_neighbor(_tokens, magic=0.999, gap=4):
+def get_neighbor(_tokens, magic=0.9999, gap=2):
     tokens = list(_tokens)
     if random.random() < magic:
         # shuffle
@@ -53,13 +53,15 @@ def get_neighbor(_tokens, magic=0.999, gap=4):
         pos = random.randint(0, len(tokens)-1)
         tokens.insert(pos, tokens[pos])
     '''
-        # remove
-        if len(tokens) > gram_num:
-            pos = random.randint(0, len(tokens)-1)
-            if tokens[pos][1] != 'n':
-                tokens.pop(pos)
+        if random.random() < magic:
+            # remove
+            if len(tokens) > gram_num:
+                pos = random.randint(0, len(tokens)-1)
+                if tokens[pos][1] == "uj":
+                    tokens.pop(pos)
+        else:
     '''
-    
+            
     return tokens
 
 # fine ngrams
