@@ -2,7 +2,7 @@
 
 import codecs
 
-import cwn
+#import cwn
 import MySQLdb
 
 def create_cursor():
