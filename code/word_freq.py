@@ -18,7 +18,11 @@ def check_dir(path):
         if not os.path.isdir(subpath):
             os.mkdir(subpath)
 
-def count_freqs_from_files(thres):
+def count_freqs(thres):
+    """Generates ../wordfreq/author/index.txt for each book in ../format
+
+    Words not occurring more than `thres` times will be omitted. """
+
     for dir_i in range(len(dirs)):
         (dir_name, dir_num) = dirs[dir_i]
         print 'doing ... ', dir_name
@@ -48,6 +52,12 @@ def count_freqs_from_files(thres):
                 print >>File, {k: v for k, v in word_dick.iteritems() if v > thres}
 
 def raise_threshold(new_thres):
+    """Adjusts threshold for generated freq files.
+
+    Setting a `new_thres` lower than the older one has no effect.
+    If you want to lower the threshold, please use `count_freqs` to
+    regenerate the files."""
+
     for dir_i in range(len(dirs)):
         (dir_name, dir_num) = dirs[dir_i]
         print 'doing ... ', dir_name
@@ -55,14 +65,23 @@ def raise_threshold(new_thres):
             file_name = '%s/%s.txt' % (dir_name, file_i)
             print 'now in file', file_name
 
-            with codecs.open('../wordfreq/' + file_name, 'r', encoding='utf8') as File:
-                File.readline()
-                word_dick = eval(File.readline())
+            word_dick = load_file('../wordfreq/' + file_name)
 
             with codecs.open('../wordfreq/' + file_name, 'w', encoding='utf8') as File:
                 print >>File, 'freq_dick = '
                 print >>File, {k: v for k, v in word_dick.iteritems() if v > new_thres}
 
+def load_file(file_name):
+    """Loads the given frequency file.
+
+    Returns a dictionary mapping a phrase to the number of times it occurred
+    in the novel."""
+
+    with codecs.open(file_name, 'r', encoding='utf8') as File:
+        File.readline()
+        word_dick = eval(File.readline())
+    return word_dick
+
 if __name__ == '__main__':
-    count_freqs_from_files(5)
+    count_freqs(5)
     raise_threshold(8)
