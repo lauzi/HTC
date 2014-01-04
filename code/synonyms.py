@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+file_name = '../data/wordbank.txt'
+
 import codecs
 
 #import cwn
@@ -77,8 +79,8 @@ if __name__ == '__main__':
     #for syn in cwn.Synset().senses:
     #    print syn
 
-    #make_wordbank('wordbank.txt')
+    #make_wordbank(file_name)
 
-    (dick, invdick) = read_wordbank('wordbank.txt')
+    (dick, invdick) = read_wordbank(file_name)
 
     pretty_print_query(query_word(u'按照', dick, invdick))
