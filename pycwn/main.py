@@ -5,22 +5,25 @@ import codecs
 import cwn
 import MySQLdb
 
-conn = MySQLdb.connect(host = 'localhost',
-                       port = 5566,
-                       user = 'root',
-                       charset = 'utf8',
-                       passwd = 'root',
-                       use_unicode = True,
-                       db = 'cwn') # connect to my_laptop SQL
-cursor = conn.cursor()
+def create_cursor():
+    conn = MySQLdb.connect(host = 'localhost',
+                           port = 5566,
+                           user = 'root',
+                           charset = 'utf8',
+                           passwd = 'root',
+                           use_unicode = True,
+                           db = 'cwn') # connect to my_laptop SQL
+    return conn.cursor()
 
 def query_syndb(File):
+    cursor = create_cursor()
     cursor.execute(u"SELECT * FROM 同義詞")
     c = cursor.fetchall()
     for i in range(300):
         print >> File, c[i][0], ", ", c[i][1], ", ", c[i][2], ", ", c[i][3], ", ", c[i][4]
 
 def make_wordbank(file_name):
+    cursor = create_cursor()
     cursor.execute(u"SELECT DISTINCT common_schema.replace_all(word, '(012345679', '') FROM 同義詞;")
     words = map(lambda x: x[0], cursor.fetchall())
 
