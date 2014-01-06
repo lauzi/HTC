@@ -35,8 +35,9 @@ if __name__ == '__main__':
                 dick[word] = freq_dick[word]
 
         print >>output_file, 'File name:', file_name
+        total = sum(dick.values())
         for word, freq in sorted(dick.items(), key=lambda x: x[1], reverse=True)[:30]:
-            print >>output_file, word, freq
+            print >>output_file, word, '%d/%d =' % (freq, total), float(freq) / total
 
     with codecs.open('tmp.txt', 'w', encoding='utf8') as File:
         for file_name in wordfreq_files:
