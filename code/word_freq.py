@@ -3,10 +3,6 @@
 import codecs
 import os
 
-import jieba as jb
-jb.load_userdict('../data/dict.txt')
-import jieba.posseg as ps
-
 dirs = [('cityup', 5),
         ('9knife', 24),
         ('love0', 2)]
@@ -19,6 +15,10 @@ def check_dir(path):
             os.mkdir(subpath)
 
 def count_freqs(thres):
+    import jieba as jb
+    jb.load_userdict('../data/dict.txt')
+    import jieba.posseg as ps
+
     """Generates ../wordfreq/author/index.txt for each book in ../format
 
     Words not occurring more than `thres` times will be omitted. """
@@ -57,6 +57,10 @@ def raise_threshold(new_thres):
     Setting a `new_thres` lower than the older one has no effect.
     If you want to lower the threshold, please use `count_freqs` to
     regenerate the files."""
+
+    import jieba as jb
+    jb.load_userdict('../data/dict.txt')
+    import jieba.posseg as ps
 
     for dir_i in range(len(dirs)):
         (dir_name, dir_num) = dirs[dir_i]

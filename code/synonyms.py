@@ -5,9 +5,10 @@ file_name = '../data/wordbank.txt'
 import codecs
 
 #import cwn
-import MySQLdb
 
 def create_cursor():
+    import MySQLdb
+
     conn = MySQLdb.connect(host = 'localhost',
                            port = 5566,
                            user = 'root',
