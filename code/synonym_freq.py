@@ -39,6 +39,6 @@ if __name__ == '__main__':
         for word, freq in sorted(dick.items(), key=lambda x: x[1], reverse=True)[:30]:
             print >>output_file, word, '%d/%d =' % (freq, total), float(freq) / total
 
-    with codecs.open('tmp.txt', 'w', encoding='utf8') as File:
+    with codecs.open('../wordfreq/synonym_freqs.txt', 'w', encoding='utf8') as File:
         for file_name in wordfreq_files:
             count(file_name, File)
