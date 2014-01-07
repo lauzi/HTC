@@ -1,6 +1,6 @@
 # A library for word swapping.
 #
-# A word's preference = syn_weight * (synonym_freq.freq_offset + actual word freq)
+# A word's preference = weight_func(syn_freq, book_freq)
 #
 # Example:
 # import synonym_freq
@@ -14,12 +14,14 @@
 # -*- coding: utf-8 -*-
 
 import codecs
+import math
 import sys
 
 import word_freq
 import synonyms
 
-freq_offset = 3
+freq_offset = 3.0
+weight_func = lambda x, y: math.log(1+x) * (y + freq_offset)
 
 def enum_file_names(dirs = None):
     if dirs is None:
@@ -46,11 +48,11 @@ def query(word, dick, invdick, freqdick):
     syn_sims = reweight(synonyms.query_word(word, dick, invdick))
 
     # we should give any word a chance
-    res_freqs = reweight({key: val * (freqdick.get(key, 0) + freq_offset)
-                          for key, val in syn_sims})
+    res_freqs = reweight({key: weight_func(val, freqdick.get(key, 0))
+                          for key, val in syn_sims.iteritems()})
 
-    return sorted(res_freqs.iteritems(), lambda x: x[1], reversed=True)
-    return res_freq.items() # comment prev. line if we don't need to sort the result
+    #return sorted(res_freqs.items(), lambda x: x[1], reverse=True)
+    return res_freqs.items() # comment prev. line if we don't need to sort the result
 
 if __name__ == '__main__':
     (dick, invdick) = synonyms.read_wordbank('../data/wordbank.txt')
