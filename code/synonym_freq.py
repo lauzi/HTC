@@ -34,7 +34,7 @@ def enum_file_names(dirs = None):
 def reweight(dick):
     """Reweights a DICKTIONARY so that its values' sum will be 1"""
 
-    total = sum(dick.items())
+    total = sum(dick.values())
     return {key: float(val)/total for key, val in dick}
 
 def query(word, dick, invdick, freqdick):
