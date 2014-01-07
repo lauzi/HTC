@@ -27,7 +27,7 @@ def enum_file_names(dirs = None):
                 ('9knife', 24),
                 ('love0', 2)]
 
-    return ['%s/%s.txt' % (fname, fidx)
+    return ['%s/%d.txt' % (fname, fidx)
             for fname, fidxs in dirs
             for fidx in range(1, fidxs+1)]
 
