@@ -11,7 +11,7 @@ import synonyms
 _dick, _invdick = None, None
 _loaded_freq_dick = {}
 
-def sub(tokens, author):
+def sub(tokens, author, wt_func=None):
     """sub :: ([(word, POS)], String) -> [word]
     Chooses shit based on shit.
     """
@@ -26,7 +26,7 @@ def sub(tokens, author):
     freq_dick = _loaded_freq_dick[author]
 
     def subsub(word):
-        candidates = synonym_freq.query(word, _dick, _invdick, freq_dick)
+        candidates = synonym_freq.query(word, _dick, _invdick, freq_dick, wt_func)
         d = random.random()
 
         acc = 0.
