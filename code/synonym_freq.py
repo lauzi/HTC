@@ -35,7 +35,7 @@ def reweight(dick):
     """Reweights a DICKTIONARY so that its values' sum will be 1"""
 
     total = sum(dick.values())
-    return {key: float(val)/total for key, val in dick}
+    return {key: float(val)/total for key, val in dick.iteritems()}
 
 def query(word, dick, invdick, freqdick):
     """Returns [(syn, prob.)] where `syn` is a synonym of `word` and
