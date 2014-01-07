@@ -22,7 +22,7 @@ def sub(tokens, author):
         _dick, _invdick = synonyms.read_wordbank('../data/wordbank.txt')
 
     if author not in _loaded_freq_dick:
-        _loaded_freq_dick[author] = word_freq.load_file('../wordfreq/%s/1.txt' % (author)) # tmp
+        _loaded_freq_dick[author] = word_freq.load_file('../wordfreq/%s/sum.txt' % (author)) # tmp
     freq_dick = _loaded_freq_dick[author]
 
     def subsub(word):
