@@ -62,6 +62,9 @@ def read_wordbank(file_name):
     return (dick, invdick)
 
 def query_word(word, dick, invdick):
+    if word not in dick:
+        return {word: 1}
+
     mydick = {}
     for coset in dick[word]:
         for coword in invdick[coset]:
