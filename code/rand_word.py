@@ -1,3 +1,5 @@
+"""Picks synonyms using a probability based on synonym_freq and word_freq """
+
 # -*- coding: utf-8 -*-
 
 import random
@@ -10,7 +12,11 @@ _dick, _invdick = None, None
 _loaded_freq_dick = {}
 
 def sub(tokens, author):
-    """Returns a list of tuples"""
+    """sub :: ([(word, POS)], String) -> [word]
+    Chooses shit based on shit.
+    """
+
+    global _dick, _invdick, _loaded_freq_dick
 
     if _dick is None:
         _dick, _invdick = synonyms.read_wordbank('../data/wordbank.txt')
