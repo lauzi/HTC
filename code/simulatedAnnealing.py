@@ -52,15 +52,6 @@ def get_neighbor(_tokens, magic=0.9999, gap=2):
         # duplicate
         pos = random.randint(0, len(tokens)-1)
         tokens.insert(pos, tokens[pos])
-    '''
-        if random.random() < magic:
-            # remove
-            if len(tokens) > gram_num:
-                pos = random.randint(0, len(tokens)-1)
-                if tokens[pos][1] == "uj":
-                    tokens.pop(pos)
-        else:
-    '''
             
     return tokens
 
@@ -119,7 +110,9 @@ def add_punc(_tokens, dict):
 def solve(inputStr, gram_dict):
     after_tokens = sa(inputStr, gram_dict)
     after_tokens = add_punc(after_tokens, gram_dict)
-    return tokens_to_str(after_tokens)
+    import rand_word
+    after_strs = rand_word.sub(after_tokens, author)
+    return "".join(after_strs)
 
 # clean any not-word symbol
 def clean_str(str, invalid=u'，：；、…，。！？“”﹝﹞「」”＂『』《》—　 （）'):
