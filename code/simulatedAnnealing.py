@@ -64,8 +64,8 @@ def energy(tokens, gram_dict, gram_num):
         return 0
 
 # get dictionary from eval the target file
-def get_dict(gram_path, author, gram_num):
-    fin = open(gram_path % (author, gram_num), 'r')
+def get_dict(dict_name):
+    fin = open(dict_name, 'r')
     return eval(fin.readline().strip())
 
 # add punctuation
@@ -144,7 +144,7 @@ if __name__ == "__main__":
                 pre_arg = ""
 
     # init
-    gram_dict = get_dict(gram_path, author, gram_num)
+    gram_dict = get_dict(gram_path % (author, gram_num))
     jb.load_userdict('../data/dict.txt')
     
     # process input
