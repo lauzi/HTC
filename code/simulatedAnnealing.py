@@ -8,24 +8,17 @@ import sys
 import jieba as jb
 import jieba.posseg as ps
 
-gram_path = '../ngram/normalized/%s_%d.txt'
-gram_num = 3
-author = 'cityup'
-file_name = 'in.txt'
-fout = sys.stdout
-ftmp = sys.stdout
-
 # simulated annealing
-def sa(inputStr, gram_dict, k_max=10000, tem=lambda x: 1.0-x ** 2):
+def sa(inputStr, gram_dict, gram_num, k_max=10000, tem=lambda x: 1.0-x ** 2):
     s = ps.cut(inputStr)
     s_now = map(lambda x:(x.word, x.flag), ps.cut(inputStr))
-    e_now = energy(s_now, gram_dict)
+    e_now = energy(s_now, gram_dict, gram_num)
     k_now = 0
     while k_now < k_max:
-        if k_now % (k_max/10) == 0:
-            print >> ftmp, ("k_now = %d, e_now = %f %s" % (k_now,  e_now, tokens_to_str(s_now)))
+        # if k_now % (k_max/10) == 0:
+            # print >> ftmp, ("k_now = %d, e_now = %f %s" % (k_now,  e_now, tokens_to_str(s_now)))
         s_nxt = get_neighbor(s_now)
-        e_nxt = energy(s_nxt, gram_dict)
+        e_nxt = energy(s_nxt, gram_dict, gram_num)
         if (e_nxt > e_now) or random.random() < math.exp(-(e_now-e_nxt)*1.0/tem(k_now*1.0/k_max)):
             s_now = s_nxt
             e_now = e_nxt
@@ -56,12 +49,12 @@ def get_neighbor(_tokens, magic=0.9999, gap=2):
     return tokens
 
 # fine ngrams
-def find_ngrams(lst):
+def find_ngrams(lst, gram_num):
 	return zip(*[lst[i:] for i in range(gram_num)])
 
 # calc the energy of current tokens
-def energy(tokens, gram_dict):
-    lst = find_ngrams(map(lambda x:x[1], tokens))
+def energy(tokens, gram_dict, gram_num):
+    lst = find_ngrams(map(lambda x:x[1], tokens), gram_num)
     if lst:
         energy_count = 0.0
         for gram in lst:
@@ -71,12 +64,12 @@ def energy(tokens, gram_dict):
         return 0
 
 # get dictionary from eval the target file
-def get_dict():
+def get_dict(gram_path, author, gram_num):
     fin = open(gram_path % (author, gram_num), 'r')
     return eval(fin.readline().strip())
 
 # add punctuation
-def add_punc(_tokens, dict):
+def add_punc(_tokens, dict, gram_num):
     
     def count_len(lb, rb):
         return (rb-lb+1) - gram_num + 1
@@ -87,7 +80,7 @@ def add_punc(_tokens, dict):
     # dp
     for j in range(len(tokens)):
         for i in range(len(tokens)-j):
-            max_value = energy(tokens[i:i+j+1], dict)
+            max_value = energy(tokens[i:i+j+1], dict, gram_num)
             max_lst = []
             for k in range(i,i+j):
                 len1 = count_len(i,k)
@@ -107,9 +100,9 @@ def add_punc(_tokens, dict):
     return tokens
 
 # sort of preprocessing ...
-def solve(inputStr, gram_dict):
-    after_tokens = sa(inputStr, gram_dict)
-    after_tokens = add_punc(after_tokens, gram_dict)
+def solve(inputStr, gram_dict, gram_num):
+    after_tokens = sa(inputStr, gram_dict, gram_num)
+    after_tokens = add_punc(after_tokens, gram_dict, gram_num)
     import rand_word
     after_strs = rand_word.sub(after_tokens, author)
     return "".join(after_strs)
@@ -121,8 +114,16 @@ def clean_str(str, invalid=u'，：；、…，。！？“”﹝﹞「」”＂
     return str
 
 if __name__ == "__main__":
+    # init
+    gram_num = 3
+    gram_path = '../ngram/normalized/%s_%d.txt'
+    author = 'cityup'    
+    fout = sys.stdout
+    ftmp = sys.stdout
+    file_name = 'in.txt'
+
     # input interface
-    ftmp = codecs.open('out.txt', 'w', encoding='utf8')
+    # ftmp = codecs.open('out.txt', 'w', encoding='utf8')
     if len(sys.argv) > 1:
         pre_arg = ""
         for arg in sys.argv[1:]:
@@ -143,7 +144,7 @@ if __name__ == "__main__":
                 pre_arg = ""
 
     # init
-    gram_dict = get_dict()
+    gram_dict = get_dict(gram_path, author, gram_num)
     jb.load_userdict('../data/dict.txt')
     
     # process input
@@ -153,6 +154,6 @@ if __name__ == "__main__":
         inp = inp.strip()
         if len(inp) > gram_num:
             print >> fout, "Origin Str:\n%s" % (inp)
-            print >> fout, "After Str:\n%s" % (solve(inp, gram_dict))
+            print >> fout, "After Str:\n%s" % (solve(inp, gram_dict, gram_num))
     fin.close()
     ftmp.close()
