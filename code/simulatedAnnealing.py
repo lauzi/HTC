@@ -31,7 +31,7 @@ def tokens_to_str(tokens):
     return "".join(map(lambda x:x[0], tokens))
     
 # get neighbor
-def get_neighbor(_tokens, gram_num, magic=0.9997, gap=2):
+def get_neighbor(_tokens, gram_num, magic=0.9996, gap=2):
     tokens = list(_tokens)
     if len(tokens) <= gram_num:
         return tokens
@@ -43,14 +43,17 @@ def get_neighbor(_tokens, gram_num, magic=0.9997, gap=2):
         tokens[pos1] = tokens[pos2]
         tokens[pos2] = tmp
     else:
-        if random.random() < 0.4:
+        rnd = random.random()
+        if rnd < 0.25:
             # duplicate
             pos = random.randint(0, len(tokens)-1)
             tokens.insert(pos, tokens[pos])
-        else:
+        elif rnd < 0.25:
             # remove
             pos = random.randint(0, len(tokens)-1)
             tokens.pop(pos)
+        else:
+            tokens = [x for x in tokens if x[1] not in  ['uj', 'y'] ]
             
     return tokens
 
@@ -109,6 +112,7 @@ def add_punc(_tokens, dict, gram_num):
 def solve(inputStr, gram_dict, gram_num):
     after_tokens = sa(inputStr, gram_dict, gram_num)
     after_tokens = add_punc(after_tokens, gram_dict, gram_num)
+    # after_tokens = [s for s in after_tokens if s[1] != 'uj']
     import rand_word
     after_strs = rand_word.sub(after_tokens, author)
     return "".join(after_strs)
