@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 
-import math
 import codecs
 
 import rand_word
@@ -11,6 +10,6 @@ if __name__ == '__main__':
     tokens = zip(words, 'w'*100)
     with codecs.open('tmp.txt', 'w', encoding='utf8') as File:
         for _ in range(10):
-            for word in rand_word.sub(tokens, 'love0', lambda x, y: math.exp(-x)*(y+0.7)):
+            for word in rand_word.sub(tokens, 'love0'):
                 print >>File, word,
             print >>File

@@ -39,14 +39,10 @@ def reweight(dick):
     total = sum(dick.values())
     return {key: float(val)/total for key, val in dick.iteritems()}
 
-def query(word, dick, invdick, freqdick, wt_func=None):
+def query(word, dick, invdick, freqdick):
     """Returns [(syn, prob.)] where `syn` is a synonym of `word` and
-    `prob.` is its weight, i.e. how much we prefer it.
-
-    `wt_func` :: syn_weight -> freq_weight -> prob. """
+    `prob.` is its weight, i.e. how much we prefer it."""
     global freq_offset
-
-    if wt_func is None: wt_func = weight_func
 
     # sim for similarities
     syn_sims = reweight(synonyms.query_word(word, dick, invdick))
