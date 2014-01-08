@@ -31,7 +31,7 @@ def tokens_to_str(tokens):
     return "".join(map(lambda x:x[0], tokens))
     
 # get neighbor
-def get_neighbor(_tokens, magic=0.9999, gap=2):
+def get_neighbor(_tokens, magic=0.99995, gap=2):
     tokens = list(_tokens)
     if random.random() < magic:
         # shuffle
