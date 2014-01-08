@@ -5,7 +5,8 @@ import os
 
 dirs = [('cityup', 5),
         ('9knife', 24),
-        ('love0', 2)]
+        ('love0', 2),
+        ('lightcenter', 5)]
 
 def check_dir(path):
     dirs = path.split('/')

@@ -11,8 +11,10 @@ def clean_str(str, invalid=u'，：；、…'):
     return str
 
 if __name__ == "__main__":
-    dir_name = ["cityup", "9knife", "love0"]
-    for dir_i in range(3):
+    #dir_name = ["cityup", "9knife", "love0"]
+    dir_name = ["lightcenter"]
+    dir_num = [5]
+    for dir_i in range(1):
         print "doing ... ", dir_name[dir_i]
         for file_i in range(1, dir_num[dir_i] + 1):
 
