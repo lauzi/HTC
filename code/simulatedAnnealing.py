@@ -31,7 +31,7 @@ def tokens_to_str(tokens):
     return "".join(map(lambda x:x[0], tokens))
     
 # get neighbor
-def get_neighbor(_tokens, magic=0.9997, gap=2, gram_num):
+def get_neighbor(_tokens, gram_num, magic=0.9997, gap=2):
     tokens = list(_tokens)
     if len(tokens) <= gram_num:
         return tokens
