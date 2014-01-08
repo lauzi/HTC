@@ -17,7 +17,7 @@ def sa(inputStr, gram_dict, gram_num, k_max=10000, tem=lambda x: 1.0-x ** 2):
     while k_now < k_max:
         # if k_now % (k_max/10) == 0:
             # print >> ftmp, ("k_now = %d, e_now = %f %s" % (k_now,  e_now, tokens_to_str(s_now)))
-        s_nxt = get_neighbor(s_now)
+        s_nxt = get_neighbor(s_now, gram_num)
         e_nxt = energy(s_nxt, gram_dict, gram_num)
         if (e_nxt > e_now) or random.random() < math.exp(-(e_now-e_nxt)*1.0/tem(k_now*1.0/k_max)):
             s_now = s_nxt
@@ -31,20 +31,26 @@ def tokens_to_str(tokens):
     return "".join(map(lambda x:x[0], tokens))
     
 # get neighbor
-def get_neighbor(_tokens, magic=0.99995, gap=2):
+def get_neighbor(_tokens, magic=0.9997, gap=2, gram_num):
     tokens = list(_tokens)
+    if len(tokens) <= gram_num:
+        return tokens
     if random.random() < magic:
         # shuffle
-        if len(tokens) > 1:
-            pos1 = random.randint(0, len(tokens)-1)
-            pos2 = random.randint(max(pos1-gap,0), min(pos1+gap,len(tokens)-1))
-            tmp = tokens[pos1]
-            tokens[pos1] = tokens[pos2]
-            tokens[pos2] = tmp
+        pos1 = random.randint(0, len(tokens)-1)
+        pos2 = random.randint(max(pos1-gap,0), min(pos1+gap,len(tokens)-1))
+        tmp = tokens[pos1]
+        tokens[pos1] = tokens[pos2]
+        tokens[pos2] = tmp
     else:
-        # duplicate
-        pos = random.randint(0, len(tokens)-1)
-        tokens.insert(pos, tokens[pos])
+        if random.random() < 0.4:
+            # duplicate
+            pos = random.randint(0, len(tokens)-1)
+            tokens.insert(pos, tokens[pos])
+        else:
+            # remove
+            pos = random.randint(0, len(tokens)-1)
+            tokens.pop(pos)
             
     return tokens
 
